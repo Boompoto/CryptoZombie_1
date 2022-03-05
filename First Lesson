@@ -1,0 +1,36 @@
+pragma solidity >=0.5.0 <0.6.0; // Declare the version of the Solidity compiler this code should use, includes 0.5.0 but excludes 0.6.0
+
+contract ZombieFactory {
+
+    // declare our event here
+
+    uint dnaDigits = 16; //  uint data type is an unsigned integer, meaning its value must be non-negative, represented by a 16 digit number
+    uint dnaModulus = 10 ** dnaDigits; // 10^dnaDigits, the reason for this was to use the modulo operation later to shorten it to a 16 digit number
+
+    struct Zombie {
+        string name; //Structs allow you to create more complicated data types that have multiple properties
+        uint dna; // Initialized name using a string, dna using unsigned integer
+    }
+
+    Zombie[] public zombies; // Created a public array (Other contracts would then be able to read from, but not write to, this array) that has no fixed size (dynamic) called zombies
+
+    function _createZombie(string memory _name, uint _dna) private {
+        zombies.push(Zombie(_name, _dna));
+        uint id = zombies.push(Zombie(_name, _dna)) - 1; // This is the next name, the array index starts at 0, the following index is this one
+        emit NewZombie(id, _name, _dna);
+        // Created a function called createZombie, underscore (_) differentiates from a global variable, private allows the function only to be called inside the contract
+        // array.push(name(variables), clean way of adding a zombie with their corresponding inputs in sequence
+        // emit lets the app know a command has been fired
+    }
+
+    function _generateRandomDna(string memory _str) private view returns (uint) {
+        uint rand = uint(keccak256(abi.encodePacked(_str))); // Created a function that takes a name and spits out an integer (dna), A hash function basically maps an input into a random 256-bit hexadecimal number. A slight change in the input will cause a large change in the hash.
+        return rand % dnaModulus; // returns the integer called rand, modulo (%) is the remainer after dividing it by dnaModulus
+    }
+
+    function createRandomZombie(string memory _name) public {
+        uint randDna = _generateRandomDna(_name); // Created a function that creates randDna via running the previous function
+        _createZombie(_name, randDna); // Runs previous function and passes the two variables
+    }
+
+}
