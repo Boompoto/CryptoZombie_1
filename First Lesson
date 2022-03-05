@@ -25,7 +25,7 @@ contract ZombieFactory {
 
     function _generateRandomDna(string memory _str) private view returns (uint) {
         uint rand = uint(keccak256(abi.encodePacked(_str))); // Created a function that takes a name and spits out an integer (dna), A hash function basically maps an input into a random 256-bit hexadecimal number. A slight change in the input will cause a large change in the hash.
-        return rand % dnaModulus; // returns the integer called rand, modulo (%) is the remainer after dividing it by dnaModulus
+        return rand % dnaModulus; // returns the integer called rand, modulo (%) is the remainder after dividing it by dnaModulus
     }
 
     function createRandomZombie(string memory _name) public {
